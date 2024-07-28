@@ -23,4 +23,4 @@ export const HIGH_THRESHOLD = 75; // High speed activates on 75% and above
 
 export const RECONNECT_INTERVAL = 5000; // Try serial connection each 5 seconds
 
-export const IR_SIGNAL_SEND_TRIES = 2; // Repeat (duplicate) IR single this number of times
+export const IR_SIGNAL_SEND_TRIES = 1; // Repeat (duplicate) IR single this number of times
