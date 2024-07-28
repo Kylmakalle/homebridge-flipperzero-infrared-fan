@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "FlipperzeroInfraredFan",
   "pluginType": "platform",
   "singular": true,
   "schema": {
@@ -9,7 +9,14 @@
         "title": "Name",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "default": "Flipperzero Infrared Fan"
+      },
+      "serialport": {
+        "title": "Serial Port",
+        "type": "string",
+        "required": true,
+        "description": "https://docs.flipper.net/development/cli#rnDLl",
+        "placeholder": "/dev/null"
       }
     }
   }

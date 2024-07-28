@@ -1,3 +1,23 @@
+# Homebridge Flipperzero Infrared Fan
+
+Personal homebridge plugin to control a fan with Flipperzero Infrared module.
+
+This Plugin connects to FlipperZero via serial port and sends raw infrared commands towards Fan.
+
+```shell
+git clone https://github.com/Kylmakalle/homebridge-flipperzero-infrared-fan
+cd homebridge-flipperzero-infrared-fan
+./update.sh
+```
+
+> Some standard homebridge installation restrict custom plugins from load.
+> Make sure to remove `--strict-plugin-resolution` in /opt/homebridge/start.sh
+> You'll likely need to Power Options > Restart HB Service & UI after that,
+
+See [plugin template](https://github.com/homebridge/homebridge-plugin-template) on how to develop your own plugin.
+
+---
+
 <p align="center">
 
 <img src="https://github.com/homebridge/branding/raw/latest/logos/homebridge-wordmark-logo-vertical.png" width="150">
