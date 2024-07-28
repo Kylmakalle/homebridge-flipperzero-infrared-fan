@@ -116,6 +116,8 @@ export class ExamplePlatformAccessory {
       this.scheduleReconnect();
     });
 
+    // Actually, we don't need to read any data
+    // However, Flipperzero stop receiving any data if we don't read it after about a 10-15 individual commands
     this.serialPort.on('data', (data: Buffer) => {
       this.buffer += data.toString();
       const lines = this.buffer.split('\n');
@@ -171,7 +173,7 @@ export class ExamplePlatformAccessory {
   }
 
   async sendIRSignal(signal: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-    this.platform.log.debug('Will send IR signal:', signal.name);
+    this.platform.log.info('Will send IR signal:', signal.name);
     if (!this.serialPort || !this.serialPort.isOpen) {
       this.platform.log.warn(`Serial port is not open. Cannot send IR signal. ${signal.name}`);
       return;
