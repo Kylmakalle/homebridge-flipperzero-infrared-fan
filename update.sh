@@ -4,9 +4,9 @@ set -ex
 
 git pull
 
-npm install
-npm run build
-npm install -g .
+npm install --verbose
+npm run build --verbose
+npm install -g . --verbose
 
 echo "Restarting homebridge"
 sudo hb-service restart
