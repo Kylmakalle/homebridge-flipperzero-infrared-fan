@@ -12,7 +12,7 @@ cd homebridge-flipperzero-infrared-fan
 
 > Some standard homebridge installation restrict custom plugins from load.
 > Make sure to remove `--strict-plugin-resolution` in /opt/homebridge/start.sh
-> You'll likely need to Power Options > Restart HB Service & UI after that,
+> You'll likely need to Power Options > Restart HB Service & UI after that
 
 See [plugin template](https://github.com/homebridge/homebridge-plugin-template) on how to develop your own plugin.
 
