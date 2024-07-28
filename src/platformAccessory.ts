@@ -69,6 +69,8 @@ export class ExamplePlatformAccessory {
     }
   }
 
+  private buffer: string = '';
+
   // Serial port
   private initializeSerialPort() {
     if (this.serialPort) {
@@ -112,6 +114,20 @@ export class ExamplePlatformAccessory {
     this.serialPort.on('close', () => {
       this.platform.log.warn('Serial port closed');
       this.scheduleReconnect();
+    });
+
+    this.serialPort.on('data', (data: Buffer) => {
+      this.buffer += data.toString();
+      const lines = this.buffer.split('\n');
+
+      // Process all complete lines
+      while (lines.length > 1) {
+        const completeLine = lines.shift()!.trim();
+        this.platform.log.debug('Received serial response:', completeLine);
+      }
+
+      // Keep the last incomplete line in the buffer
+      this.buffer = lines[0];
     });
   }
 
