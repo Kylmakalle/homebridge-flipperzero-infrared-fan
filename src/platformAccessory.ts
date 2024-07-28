@@ -19,7 +19,7 @@ export class ExamplePlatformAccessory {
   private service: Service;
   private serialPort: SerialPort | null = null;
   private serialPortName: string;
-  private irSignals: any;
+  private irSignals: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   private updateDebouncers: AccessoryUpdateDebouncer = {};
   private reconnectInterval: NodeJS.Timeout | null = null;
 
@@ -124,8 +124,8 @@ export class ExamplePlatformAccessory {
   // IR signals
   parseIRFile(filePath: string) {
     const content = fs.readFileSync(filePath, 'utf8');
-    const signals: any = {};
-    let currentSignal: any = null;
+    const signals: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+    let currentSignal: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     content.split('\n').forEach(line => {
       line = line.trim();
@@ -151,7 +151,7 @@ export class ExamplePlatformAccessory {
     return signals;
   }
 
-  async sendIRSignal(signal: any) {
+  async sendIRSignal(signal: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     this.platform.log.debug('Sending IR signal:', signal.name);
     if (!this.serialPort || !this.serialPort.isOpen) {
       this.platform.log.warn('Serial port is not open. Cannot send IR signal.');
