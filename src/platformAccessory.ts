@@ -152,7 +152,7 @@ export class ExamplePlatformAccessory {
   }
 
   async sendIRSignal(signal: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-    this.platform.log.debug('Sending IR signal:', signal.name);
+    this.platform.log.debug('Will send IR signal:', signal.name);
     if (!this.serialPort || !this.serialPort.isOpen) {
       this.platform.log.warn(`Serial port is not open. Cannot send IR signal. ${signal.name}`);
       return;
