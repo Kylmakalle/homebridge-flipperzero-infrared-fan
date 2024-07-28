@@ -1,7 +1,7 @@
 import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 import { ExampleHomebridgePlatform } from './platform.js';
 import { SerialPort } from 'serialport';
-import { DEBOUNCE_TIME, IR_FILE_PATH, MEDIUM_THRESHOLD, HIGH_THRESHOLD, RECONNECT_INTERVAL } from './settings.js';
+import { DEBOUNCE_TIME, IR_FILE_PATH, MEDIUM_THRESHOLD, HIGH_THRESHOLD, RECONNECT_INTERVAL, IR_SIGNAL_SEND_TRIES } from './settings.js';
 import fs from 'fs';
 
 interface AccessoryStateUpdate {
@@ -154,7 +154,7 @@ export class ExamplePlatformAccessory {
   async sendIRSignal(signal: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     this.platform.log.debug('Sending IR signal:', signal.name);
     if (!this.serialPort || !this.serialPort.isOpen) {
-      this.platform.log.warn('Serial port is not open. Cannot send IR signal.');
+      this.platform.log.warn(`Serial port is not open. Cannot send IR signal. ${signal.name}`);
       return;
     }
     // Docs says Flipper can handle up to 512 samples of IR data,
@@ -164,25 +164,31 @@ export class ExamplePlatformAccessory {
     // https://docs.flipper.net/development/cli/#FEjwz
     const chunkSize = 512 / 8;
     const totalChunks = Math.ceil(signal.data.length / chunkSize);
-    for (let i = 0; i < signal.data.length; i += chunkSize) {
-      const chunk = signal.data.slice(i, i + chunkSize);
-      const command = `ir tx RAW F:${signal.frequency} DC:${signal.dutyCycle} ${chunk.join(' ')}\r\n`;
-      try {
-        await new Promise<void>((resolve, reject) => {
-          this.serialPort!.write(command, (err) => {
-            if (err) {
-              this.platform.log.error('Error writing to serial port:', err.message);
-              reject(err);
-            } else {
-              resolve();
-            }
+
+    // Sending IR data from Flipper may be not reliable, so we'll try a few times
+    // https://t.me/flipperzero/103920/241710
+    for (let _try = 0; _try < IR_SIGNAL_SEND_TRIES; _try++) {
+      this.platform.log.debug('Sending IR signal:', signal.name, ` try: (${_try + 1}/${IR_SIGNAL_SEND_TRIES})`);
+      for (let i = 0; i < signal.data.length; i += chunkSize) {
+        const chunk = signal.data.slice(i, i + chunkSize);
+        const command = `ir tx RAW F:${signal.frequency} DC:${signal.dutyCycle} ${chunk.join(' ')}\r\n`;
+        try {
+          await new Promise<void>((resolve, reject) => {
+            this.serialPort!.write(command, (err) => {
+              if (err) {
+                this.platform.log.error('Error writing to serial port:', err.message);
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
           });
-        });
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error) {
-        const chunkNumber = Math.ceil((i + chunkSize) / chunkSize);
-        this.platform.log.error(`Failed to send chunk ${chunkNumber}/${totalChunks} of IR signal ${signal.name}:`, error);
-        break;
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          const chunkNumber = Math.ceil((i + chunkSize) / chunkSize);
+          this.platform.log.error(`Failed to send chunk ${chunkNumber}/${totalChunks} of IR signal ${signal.name}:`, error);
+          break;
+        }
       }
     }
   }
